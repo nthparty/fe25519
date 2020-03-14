@@ -22,8 +22,7 @@ class fe25519():
     """
 
     def __init__(self, ns):
-        """Create a field element using a list of five integers."""
-        # fe25519 <=> uint64[5]
+        """Create a field element using a list of five 64-bit integers."""
         self.ns = ns
 
     def copy(self):
@@ -297,6 +296,51 @@ class fe25519():
         t0 = t0 ** 2
         return t0 * z
 
+    def __eq__(self, other):
+        return self.ns == other.ns
+
+    def is_zero(self):
+        bs = self.to_bytes()
+        d = 0
+        for i in range(len(bs)):
+            d |= bs[i]
+        return 1 & ((d - 1) >> 8)
+
+    def is_negative(self):
+        bs = self.to_bytes()
+        return bs[0] & 1
+
+    def cmov(self, g, b):
+        g = g.ns
+        f = self.ns
+        mask = (0 - b) % (2**64)
+        
+        x = [(f[i] ^ g[i]) & mask for i in range(5)]
+        return fe25519([f[i] ^ x[i] for i in range(5)])
+
+    @staticmethod
+    def from_bytes(bs):
+        mask = 2251799813685247
+
+        def load64_le(bs):
+            w = bs[0]
+            w |= bs[1] <<  8
+            w |= bs[2] << 16
+            w |= bs[3] << 24
+            w |= bs[4] << 32
+            w |= bs[5] << 40
+            w |= bs[6] << 48
+            w |= bs[7] << 56
+            return w
+
+        return fe25519([\
+            (load64_le(bs[0:8])) & mask,
+            (load64_le(bs[6:14]) >> 3) & mask,
+            (load64_le(bs[12:20]) >> 6) & mask,
+            (load64_le(bs[19:27]) >> 1) & mask,
+            (load64_le(bs[24:32]) >> 12) & mask
+        ])
+
     def to_bytes(self):
         t = self.reduce().ns
 
@@ -330,32 +374,6 @@ class fe25519():
         bs.extend(store64_le(t2))
         bs.extend(store64_le(t3))
         return bs
-
-    def __eq__(self, other):
-        return self.ns == other.ns
-
-    @staticmethod
-    def from_bytes(bs):
-        mask = 2251799813685247
-
-        def load64_le(bs):
-            w = bs[0]
-            w |= bs[1] <<  8
-            w |= bs[2] << 16
-            w |= bs[3] << 24
-            w |= bs[4] << 32
-            w |= bs[5] << 40
-            w |= bs[6] << 48
-            w |= bs[7] << 56
-            return w
-
-        return fe25519([\
-            (load64_le(bs[0:8])) & mask,
-            (load64_le(bs[6:14]) >> 3) & mask,
-            (load64_le(bs[12:20]) >> 6) & mask,
-            (load64_le(bs[19:27]) >> 1) & mask,
-            (load64_le(bs[24:32]) >> 12) & mask
-        ])
 
     def __str__(self):
         return 'fe25519(' + str(self.ns) + ')'
