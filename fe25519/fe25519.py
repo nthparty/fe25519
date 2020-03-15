@@ -213,6 +213,60 @@ class fe25519():
         # Supplied exponent is not supported.
         return None
 
+    def sq2(self):
+        mask = 2251799813685247
+        f = self.ns # 64-bit integers.
+        r = [None, None, None, None, None] # 128-bit integers.
+        carry = None # 128-bit integer.
+        r0 = [None, None, None, None, None] # 64-bit integers.
+
+        f0_2 = (f[0] << 1) % (2**64)
+        f1_2 = (f[1] << 1) % (2**64)
+
+        f1_38 = (38 * f[1]) % (2**64)
+        f2_38 = (38 * f[2]) % (2**64)
+        f3_38 = (38 * f[3]) % (2**64)
+
+        f3_19 = (19 * f[3]) % (2**64)
+        f4_19 = (19 * f[4]) % (2**64)
+
+        r[0] = (f[0]*f[0] + f1_38*f[4] + f2_38*f[3]) % (2**128)
+        r[1] = (f0_2*f[1] + f2_38*f[4] + f3_19*f[3]) % (2**128)
+        r[2] = (f0_2*f[2] + f[1]*f[1] + f3_38*f[4]) % (2**128)
+        r[3] = (f0_2*f[3] + f1_2*f[2] + f4_19*f[4]) % (2**128)
+        r[4] = (f0_2*f[4] + f1_2*f[3] + f[2]*f[2]) % (2**128)
+
+        r[0] <<= 1
+        r[1] <<= 1
+        r[2] <<= 1
+        r[3] <<= 1
+        r[4] <<= 1
+
+        r0[0] = (r[0] % (2**64)) & mask
+        carry  = r[0] >> 51
+        r[1] = (r[1] + carry) % (2**128)
+        r0[1] = (r[1] % (2**64)) & mask
+        carry  = r[1] >> 51
+        r[2] = (r[2] + carry) % (2**128)
+        
+        r0[2] = (r[2] % (2**64)) & mask
+        carry = r[2] >> 51
+        r[3] = (r[3] + carry) % (2**128)
+        r0[3] = (r[3] % (2**64)) & mask
+        carry = r[3] >> 51
+        r[4] = (r[4] + carry) % (2**128)
+        r0[4] = (r[4] % (2**64)) & mask
+        carry = r[4] >> 51
+        r0[0] = (r0[0] + 19*carry) % (2**64)
+        carry = r0[0] >> 51
+        r0[0] &= mask 
+        r0[1] = (r0[1] + (carry % (2**64))) % (2**64)
+        carry = r0[1] >> 51
+        r0[1] &= mask
+        r0[2] = (r0[2] + (carry % (2**64))) % (2**64)
+
+        return fe25519(r0)
+
     def invert(self):
         z = self.copy()
         t0 = z ** 2
