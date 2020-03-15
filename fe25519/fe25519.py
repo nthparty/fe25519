@@ -4,6 +4,8 @@ Native Python implementation of Ed25519 field elements and
 operations.
 """
 
+from __future__ import annotations
+from typing import Sequence
 import doctest
 
 class Fe25519Error(Exception):
@@ -21,22 +23,22 @@ class fe25519():
     Class for field elements.
     """
 
-    def __init__(self, ns):
+    def __init__(self: fe25519, ns: Sequence[int]):
         """Create a field element using a list of five 64-bit integers."""
         self.ns = ns
 
-    def copy(self):
+    def copy(self: fe25519):
         return fe25519([n for n in self.ns])
 
     @staticmethod
-    def zero():
+    def zero() -> fe25519:
         return fe25519([0,0,0,0,0])
 
     @staticmethod
-    def one():
+    def one() -> fe25519:
         return fe25519([1,0,0,0,0])
 
-    def reduce(self):
+    def reduce(self: fe25519) -> fe25519:
         t = self.ns # 128-bit integers.
         mask = 2251799813685247
 
@@ -100,13 +102,13 @@ class fe25519():
 
         return fe25519(t)
 
-    def __add__(self, other):
+    def __add__(self: fe25519, other: fe25519) -> fe25519:
         return fe25519([(m+n)%(2**64) for (m,n) in zip(self.ns, other.ns)])
 
-    def __neg__(self):
+    def __neg__(self: fe25519) -> fe25519:
         return fe25519.zero() - self
 
-    def __sub__(self, other):
+    def __sub__(self: fe25519, other: fe25519) -> fe25519:
         mask = 2251799813685247
 
         (h0, h1, h2, h3, h4) = other.ns
@@ -130,7 +132,7 @@ class fe25519():
             ((self.ns[4] + 4503599627370494) - h4) % (2**64)
         ])
 
-    def __mul__(self, other):
+    def __mul__(self: fe25519, other: fe25519) -> fe25519:
         mask = 2251799813685247 # 64-bit integer.
         (f, g) = (self.ns, other.ns) # 64-bit integers.
         r = [None, None, None, None, None] # 128-bit integers.
@@ -167,7 +169,7 @@ class fe25519():
 
         return fe25519(r0)
 
-    def __pow__(self, e):
+    def __pow__(self: fe25519, e: int) -> fe25519:
         if e == 2: # Squaring.
             mask = 2251799813685247 # 64-bit integer.
             f = self.ns # 64-bit integers.
@@ -213,7 +215,7 @@ class fe25519():
         # Supplied exponent is not supported.
         return None
 
-    def sq2(self):
+    def sq2(self: fe25519) -> fe25519:
         mask = 2251799813685247
         f = self.ns # 64-bit integers.
         r = [None, None, None, None, None] # 128-bit integers.
@@ -267,7 +269,7 @@ class fe25519():
 
         return fe25519(r0)
 
-    def invert(self):
+    def invert(self: fe25519) -> fe25519:
         z = self.copy()
         t0 = z ** 2
         t1 = t0 ** 2
@@ -309,7 +311,7 @@ class fe25519():
             t1 = t1 ** 2
         return t1 * t0
 
-    def pow22523(self):
+    def pow22523(self: fe25519) -> fe25519:
         z = self.copy()
         t0 = z ** 2
         t1 = t0 ** 2
@@ -350,21 +352,21 @@ class fe25519():
         t0 = t0 ** 2
         return t0 * z
 
-    def __eq__(self, other):
+    def __eq__(self: fe25519, other: fe25519) -> bool:
         return self.ns == other.ns
 
-    def is_zero(self):
+    def is_zero(self: fe25519) -> int:
         bs = self.to_bytes()
         d = 0
         for i in range(len(bs)):
             d |= bs[i]
         return 1 & ((d - 1) >> 8)
 
-    def is_negative(self):
+    def is_negative(self: fe25519) -> int:
         bs = self.to_bytes()
         return bs[0] & 1
 
-    def cmov(self, g, b):
+    def cmov(self: fe25519, g: fe25519, b: int) -> fe25519:
         g = g.ns
         f = self.ns
         mask = (0 - b) % (2**64)
@@ -373,7 +375,7 @@ class fe25519():
         return fe25519([f[i] ^ x[i] for i in range(5)])
 
     @staticmethod
-    def from_bytes(bs):
+    def from_bytes(bs: bytes) -> fe25519:
         mask = 2251799813685247
 
         def load64_le(bs):
@@ -395,7 +397,7 @@ class fe25519():
             (load64_le(bs[24:32]) >> 12) & mask
         ])
 
-    def to_bytes(self):
+    def to_bytes(self: fe25519) -> bytes:
         t = self.reduce().ns
 
         def store64_le(w):
@@ -429,10 +431,10 @@ class fe25519():
         bs.extend(store64_le(t3))
         return bs
 
-    def __str__(self):
+    def __str__(self: fe25519) -> str:
         return 'fe25519(' + str(self.ns) + ')'
 
-    def __repr__(self):
+    def __repr__(self: fe25519) -> str:
         return str(self)
 
 if __name__ == "__main__":
