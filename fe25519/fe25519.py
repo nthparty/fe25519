@@ -108,6 +108,12 @@ class fe25519():
     def __neg__(self: fe25519) -> fe25519:
         return fe25519.zero() - self
 
+    def cneg(self: fe25519, b: int) -> fe25519:
+        return self.copy().cmov(self.neg(), b)
+
+    def __abs__(self: fe25519) -> fe25519:
+        return self.cneg(self.is_negative())
+
     def __sub__(self: fe25519, other: fe25519) -> fe25519:
         mask = 2251799813685247
 
