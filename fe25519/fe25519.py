@@ -109,7 +109,7 @@ class fe25519():
         return fe25519.zero() - self
 
     def cneg(self: fe25519, b: int) -> fe25519:
-        return self.copy().cmov(self.neg(), b)
+        return self.copy().cmov(-self, b)
 
     def __abs__(self: fe25519) -> fe25519:
         return self.cneg(self.is_negative())
