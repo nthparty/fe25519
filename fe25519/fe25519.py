@@ -5,7 +5,7 @@ operations.
 """
 
 from __future__ import annotations
-from typing import Sequence
+from typing import Tuple, Sequence
 import doctest
 
 TWO_TO_64 = 2**64
@@ -277,6 +277,47 @@ class fe25519():
         # Supplied exponent is not supported.
         return None
 
+    def pow22523(self: fe25519) -> fe25519:
+        z = self.copy()
+        t0 = z.sq()
+        t1 = t0.sq()
+        t1 = t1.sq()
+        t1 = z * t1
+        t0 = t0 * t1
+        t0 = t0.sq()
+        t0 = t1 * t0
+        t1 = t0.sq()
+        for i in range(1,5):
+            t1 = t1.sq()
+        t0 = t1 * t0
+        t1 = t0.sq()
+        for i in range(1,10):
+            t1 = t1.sq()
+        t1 = t1 * t0
+        t2 = t1.sq()
+        for i in range(1,20):
+            t2 = t2.sq()
+        t1 = t2 * t1
+        t1 = t1.sq()
+        for i in range(1,10):
+            t1 = t1.sq()
+        t0 = t1 * t0
+        t1 = t0.sq()
+        for i in range(1,50):
+            t1 = t1.sq()
+        t1 = t1 * t0
+        t2 = t1.sq()
+        for i in range(1,100):
+            t2 = t2.sq()
+        t1 = t2 * t1
+        t1 = t1.sq()
+        for i in range(1,50):
+            t1 = t1.sq()
+        t0 = t1 * t0
+        t0 = t0.sq()
+        t0 = t0.sq()
+        return t0 * z
+
     def invert(self: fe25519) -> fe25519:
         z = self.copy()
         t0 = z.sq()
@@ -319,46 +360,34 @@ class fe25519():
             t1 = t1.sq()
         return t1 * t0
 
-    def pow22523(self: fe25519) -> fe25519:
-        z = self.copy()
-        t0 = z.sq()
-        t1 = t0.sq()
-        t1 = t1.sq()
-        t1 = z * t1
-        t0 = t0 * t1
-        t0 = t0.sq()
-        t0 = t1 * t0
-        t1 = t0.sq()
-        for i in range(1,5):
-            t1 = t1.sq()
-        t0 = t1 * t0
-        t1 = t0.sq()
-        for i in range(1,10):
-            t1 = t1.sq()
-        t1 = t1 * t0
-        t2 = t1.sq()
-        for i in range(1,20):
-            t2 = t2.sq()
-        t1 = t2 * t1
-        t1 = t1.sq()
-        for i in range(1,10):
-            t1 = t1.sq()
-        t0 = t1 * t0
-        t1 = t0.sq()
-        for i in range(1,50):
-            t1 = t1.sq()
-        t1 = t1 * t0
-        t2 = t1.sq()
-        for i in range(1,100):
-            t2 = t2.sq()
-        t1 = t2 * t1
-        t1 = t1.sq()
-        for i in range(1,50):
-            t1 = t1.sq()
-        t0 = t1 * t0
-        t0 = t0.sq()
-        t0 = t0.sq()
-        return t0 * z
+    def sqrt_ratio_m1_ristretto255(self: fe25519, v: fe25519) -> Tuple[fe25519, int]:
+        u = self
+
+        v3 = v.sq()
+        v3 = v3 * v                         # v3 = v^3
+        x = v3.sq()
+        x = x * v
+        x = x * u                           # x = uv^7
+
+        x = x.pow22523()                    # x = (uv^7)^((q-5)/8)
+        x = x * v3
+        x = x * u                           # x = uv^3(uv^7)^((q-5)/8)
+
+        vxx = x.sq()
+        vxx = vxx * v                       # vx^2
+        m_root_check = vxx - u              # vx^2-u
+        p_root_check = vxx + u              # vx^2+u
+        f_root_check = u * fe25519.sqrtm1   # u*sqrt(-1)
+        f_root_check = vxx + f_root_check   # vx^2+u*sqrt(-1)
+        has_m_root = m_root_check.is_zero()
+        has_p_root = p_root_check.is_zero()
+        has_f_root = f_root_check.is_zero()
+        x_sqrtm1 = x * fe25519.sqrtm1       # x*sqrt(-1)
+
+        x = x.cmov(x_sqrtm1, has_p_root | has_f_root)
+        x = abs(x)
+
+        return (x, has_m_root | has_p_root)
 
     def __eq__(self: fe25519, other: fe25519) -> bool:
         return self.ns == other.ns
