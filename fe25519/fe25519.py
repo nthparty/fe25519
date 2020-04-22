@@ -21,6 +21,7 @@ class fe25519():
     d2 = None
     sqrtm1 = None
     invsqrtamd = None
+    curve25519_A = None
 
     @staticmethod
     def zero() -> fe25519:
@@ -389,6 +390,49 @@ class fe25519():
 
         return (x, has_m_root | has_p_root)
 
+    def chi25519(self: fe25519) -> fe25519:
+        t0 = z.sq()
+        t1 = t0 * z
+        t0 = t1.sq() 
+        t2 = t0.sq()
+        t2 = t2.sq()
+        t2 = t2 * t0
+        t1 = t2 * z
+        t2 = t1.sq()
+
+        for i in range(1,5):
+            t2 = t2.sq()
+        t1 = t2 * t1
+        t2 = t1.sq()
+        for i in range(1,10):
+            t2 = t2.sq()
+        t2 = t2 * t1
+        t3 = t2.sq()
+        for i in range(1,20):
+            t3 = t3.sq()
+        t2 = t3 * t2
+        t2 = t2.sq()
+        for i in range(1,10):
+            t2 = t2.sq()
+        t1 = t2 * t1
+        t2 = t1.sq()
+        for i in range(1,50):
+            t2 = t2.sq()
+        t2 = t2 * t1
+        t3 = t2.sq()
+        for i in range(1,100):
+            t3 = t3.sq()
+        t2 = t3 * t2
+        t2 = t2.sq()
+        for i in range(1,50):
+            t2 = t2.sq()
+        t1 = t2 * t1
+        t1 = t1.sq()
+        for i in range(1,4):
+            t1 = t1.sq()
+
+        return t1 * t0
+
     def __eq__(self: fe25519, other: fe25519) -> bool:
         return self.ns == other.ns
 
@@ -457,6 +501,7 @@ fe25519.d = fe25519([929955233495203, 466365720129213, 1662059464998953, 2033849
 fe25519.d2 = fe25519([1859910466990425, 932731440258426, 1072319116312658, 1815898335770999, 633789495995903])
 fe25519.sqrtm1 = fe25519([1718705420411056, 234908883556509, 2233514472574048, 2117202627021982, 765476049583133])
 fe25519.invsqrtamd = fe25519([278908739862762, 821645201101625, 8113234426968, 1777959178193151, 2118520810568447])
+fe25519.curve25519_A = fe25519([486662, 0, 0, 0, 0])
 
 if __name__ == "__main__":
     doctest.testmod()
