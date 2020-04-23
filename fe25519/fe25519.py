@@ -391,13 +391,13 @@ class fe25519():
         return (x, has_m_root | has_p_root)
 
     def chi25519(self: fe25519) -> fe25519:
-        t0 = z.sq()
-        t1 = t0 * z
+        t0 = self.sq()
+        t1 = t0 * self
         t0 = t1.sq() 
         t2 = t0.sq()
         t2 = t2.sq()
         t2 = t2 * t0
-        t1 = t2 * z
+        t1 = t2 * self
         t2 = t1.sq()
 
         for i in range(1,5):
