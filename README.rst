@@ -24,3 +24,11 @@ The library can be imported in the usual ways::
 
     import fe25519
     from fe25519 import fe25519
+
+Unit tests can be executed using `nose <https://nose.readthedocs.io/>`_::
+
+    nosetests
+
+Concise unit tests are implemented with the help of `fountains <https://pypi.org/project/fountains/>`_ and new reference bit lists for these tests can be generated in the following way::
+
+    python test/test_fe25519.py
