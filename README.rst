@@ -25,6 +25,10 @@ The library can be imported in the usual ways::
     import fe25519
     from fe25519 import fe25519
 
+Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
+
+    pylint fe25519
+
 Unit tests can be executed using `nose <https://nose.readthedocs.io/>`_::
 
     nosetests
