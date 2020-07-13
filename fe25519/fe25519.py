@@ -521,7 +521,7 @@ class fe25519():
 
     def __repr__(self: fe25519) -> str:
         """String representation of an element."""
-        return str(self)
+        return str(self) # pragma: no cover
 
 # Precomputed static constants.
 fe25519.d = fe25519([
@@ -539,4 +539,4 @@ fe25519.invsqrtamd = fe25519([
 fe25519.curve25519_A = fe25519([486662, 0, 0, 0, 0])
 
 if __name__ == "__main__":
-    doctest.testmod()
+    doctest.testmod() # pragma: no cover
