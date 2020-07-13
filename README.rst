@@ -4,7 +4,7 @@ fe25519
 
 Native Python implementation of Ed25519 field elements and operations.
 
-|pypi| |travis|
+|pypi| |travis| |coveralls|
 
 .. |pypi| image:: https://badge.fury.io/py/fe25519.svg
    :target: https://badge.fury.io/py/fe25519
@@ -12,6 +12,9 @@ Native Python implementation of Ed25519 field elements and operations.
 
 .. |travis| image:: https://travis-ci.com/nthparty/fe25519.svg?branch=master
     :target: https://travis-ci.com/nthparty/fe25519
+
+.. |coveralls| image:: https://coveralls.io/repos/github/nthparty/fe25519/badge.svg?branch=master
+   :target: https://coveralls.io/github/nthparty/fe25519?branch=master
 
 Purpose
 -------
