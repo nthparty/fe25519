@@ -3,7 +3,7 @@ from bitlist import bitlist
 from fountains import fountains
 from unittest import TestCase
 
-from fe25519 import fe25519
+from fe25519.fe25519 import fe25519
 
 def one_from_bytes(bs: bytes):
     ps = list(parts(bs, length=8))
@@ -26,6 +26,10 @@ def check_or_generate_operation(self, fun, arity, bits):
     return check_or_generate(self, fs, bits)
 
 class Test_fe25519(TestCase):
+    def test_one(self, bits = 'b71ee55494c10540b2d3c4221793de6c6c722100387cab827ae1522affb5fd66'):
+        fun = lambda bs: (one_from_bytes(bs) * fe25519.one()).to_bytes()
+        return check_or_generate_operation(self, fun, 1, bits)
+
     def test_reduce(self, bits = 'b71ee55494c10540b2d3c4221793de6c6c722100387cab827ae1522affb5fd66'):
         fun = lambda bs: (one_from_bytes(bs).reduce()).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
@@ -57,7 +61,7 @@ class Test_fe25519(TestCase):
         return check_or_generate_operation(self, fun, 2, bits)
 
     def test_sq(self, bits = '8a7c83d71aacf24fcd76e5d24fa4d9fc7f6ee0e56333305ed8c4ae69565af95a'):
-        fun = lambda bs: (one_from_bytes(bs).sq()).to_bytes()
+        fun = lambda bs: (one_from_bytes(bs)**2).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_sq2(self, bits = '69730f8c46dea00aa3377189a87c07277a6be1d3efec442b5c11a99fdd67f230'):
@@ -69,7 +73,7 @@ class Test_fe25519(TestCase):
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_invert(self, bits = 'f103890f12e1533aee66007a2a7b051a8e9f378fded8291bb0110a95ac55d059'):
-        fun = lambda bs: (one_from_bytes(bs).invert()).to_bytes()
+        fun = lambda bs: (one_from_bytes(bs)**(-1)).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_sqrt_ratio_m1_ristretto255(self, bits = 'e08f25034216acaf3d92d080192fa7ec1585693caa6931a84b4261100c071d08'):
@@ -107,6 +111,22 @@ class Test_fe25519(TestCase):
             ((f1, f2), b) = (two_from_bytes(bs), bs[0] % 2)
             return f1.cmov(f2, b).to_bytes()
         return check_or_generate_operation(self, fun, 2, bits)
+
+    def test_pow(self, bits = '0000000000000000000000000000000000000000000000000000000000000000'):
+        fun = lambda bs: bitlist([0 if one_from_bytes(bs)**(0) is None else 255]).to_bytes()
+        return check_or_generate_operation(self, fun, 1, bits)
+
+    def test_str(self, bits = '0000000000000000000000000000000000000000000000000000000000000000'):
+        def fun(bs):
+            f = one_from_bytes(bs)
+            return bitlist([0 if eval(str(f)) == f else 255]).to_bytes()
+        return check_or_generate_operation(self, fun, 1, bits)
+
+    def test_bytes(self, bits = '0000000000000000000000000000000000000000000000000000000000000000'):
+        def fun(bs):
+            f = one_from_bytes(bs)
+            return bitlist([0 if fe25519.from_bytes(f.to_bytes()) == f else 255]).to_bytes()
+        return check_or_generate_operation(self, fun, 1, bits)
 
 if __name__ == "__main__":
     # Generate reference bit lists for tests.
