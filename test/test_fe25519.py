@@ -22,7 +22,13 @@ def check_or_generate(self, fs, bits):
         return bitlist(list(fs)).hex() # Return target bits for this test.
 
 def check_or_generate_operation(self, fun, arity, bits):
-    fs = fountains(8*5*arity, seed=0, limit=256, bits=bits, function=fun)
+    fs = fountains(
+        8*5*arity, 
+        seed=bytes(0), # This is also the default; explicit for clarity.
+        limit=256,
+        bits=bits,
+        function=fun
+    )
     return check_or_generate(self, fs, bits)
 
 class Test_fe25519(TestCase):
