@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 setup(
     name="fe25519",
-    version="0.1.2",
+    version="0.2.0",
     packages=["fe25519",],
     install_requires=["parts>=0.2.1","bitlist>=0.3.1","fountains>=0.2.1",],
     license="MIT",
