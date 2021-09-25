@@ -1,2 +1,2 @@
-"""Allow users to use fe25519 values directly."""
+"""Gives users direct access to class."""
 from fe25519.fe25519 import fe25519

@@ -1,3 +1,7 @@
+"""
+Test suite containing functional unit tests for the exported primitives and
+classes.
+"""
 from parts import parts
 from bitlist import bitlist
 from fountains import fountains
@@ -80,6 +84,10 @@ class Test_fe25519(TestCase):
 
     def test_invert(self, bits = 'f103890f12e1533aee66007a2a7b051a8e9f378fded8291bb0110a95ac55d059'):
         fun = lambda bs: (one_from_bytes(bs)**(-1)).to_bytes()
+        return check_or_generate_operation(self, fun, 1, bits)
+
+    def test_invert_op(self, bits = 'f103890f12e1533aee66007a2a7b051a8e9f378fded8291bb0110a95ac55d059'):
+        fun = lambda bs: (~one_from_bytes(bs)).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_sqrt_ratio_m1_ristretto255(self, bits = 'e08f25034216acaf3d92d080192fa7ec1585693caa6931a84b4261100c071d08'):
