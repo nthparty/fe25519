@@ -12,8 +12,8 @@ setup(
     url="https://github.com/nthparty/fe25519",
     author="Andrei Lapets",
     author_email="a@lapets.io",
-    description="Native Python implementation of Ed25519 "+\
-                "field elements and operations.",
+    description="Pure Python data structure for working with Ed25519 "+\
+                "(and Ristretto) field elements and operations.",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     test_suite="nose.collector",
