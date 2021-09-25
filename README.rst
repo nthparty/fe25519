@@ -4,17 +4,23 @@ fe25519
 
 Pure Python data structure for working with Ed25519 (and Ristretto) field elements and operations.
 
-|pypi| |travis| |coveralls|
+|pypi| |readthedocs| |travis| |coveralls|
 
 .. |pypi| image:: https://badge.fury.io/py/fe25519.svg
    :target: https://badge.fury.io/py/fe25519
    :alt: PyPI version and link.
 
+.. |readthedocs| image:: https://readthedocs.org/projects/fe25519/badge/?version=latest
+   :target: https://fe25519.readthedocs.io/en/latest/?badge=latest
+   :alt: Read the Docs documentation status.
+
 .. |travis| image:: https://travis-ci.com/nthparty/fe25519.svg?branch=master
    :target: https://travis-ci.com/nthparty/fe25519
+   :alt: Travis CI build status.
 
 .. |coveralls| image:: https://coveralls.io/repos/github/nthparty/fe25519/badge.svg?branch=master
    :target: https://coveralls.io/github/nthparty/fe25519?branch=master
+   :alt: Coveralls test coverage summary.
 
 Purpose
 -------
