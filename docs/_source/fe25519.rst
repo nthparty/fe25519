@@ -1,0 +1,8 @@
+fe25519 module
+==============
+
+
+.. automodule:: fe25519.fe25519
+   :members:
+   :undoc-members:
+   :show-inheritance:
