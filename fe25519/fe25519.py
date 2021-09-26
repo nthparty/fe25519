@@ -645,6 +645,15 @@ class fe25519:
         bs.extend(t3.to_bytes(8, 'little'))
         return bytes(bs)
 
+    def __bytes__(self: fe25519) -> bytes:
+        """
+        Build the byte representation of this element.
+
+        >>> bytes(fe25519.one()).hex()
+        '0100000000000000000000000000000000000000000000000000000000000000'
+        """
+        return self.to_bytes()
+
     def __str__(self: fe25519) -> str:
         """
         Obtain the string representation of an element.

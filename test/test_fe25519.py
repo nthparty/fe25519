@@ -208,6 +208,15 @@ class Test_fe25519(TestCase):
             return bitlist([0 if fe25519.from_bytes(f.to_bytes()) == f else 255]).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
 
+    def test_bytes_op(
+            self,
+            bits='0000000000000000000000000000000000000000000000000000000000000000'
+        ):
+        def fun(bs):
+            f = one_from_bytes(bs)
+            return bitlist([0 if fe25519.from_bytes(bytes(f)) == f else 255]).to_bytes()
+        return check_or_generate_operation(self, fun, 1, bits)
+
 if __name__ == "__main__":
     # Generate reference bit lists for tests.
     test_fe25519 = Test_fe25519()
