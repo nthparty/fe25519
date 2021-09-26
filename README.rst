@@ -62,7 +62,7 @@ Concise unit tests are implemented with the help of `fountains <https://pypi.org
 
 Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
 
-    python -m pip install nose coverage
+    python -m pip install pylint
     pylint fe25519
 
 Contributions
