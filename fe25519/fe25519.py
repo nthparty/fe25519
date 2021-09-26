@@ -6,8 +6,8 @@ from __future__ import annotations
 from typing import Tuple, Sequence
 import doctest
 
-_TWO_TO_64 = 2**64
-_TWO_TO_128 = 2**128
+_TWO_TO_64 = 2 ** 64
+_TWO_TO_128 = 2 ** 128
 
 class fe25519:
     """
@@ -299,10 +299,10 @@ class fe25519:
 
     def sq2(self: fe25519) -> fe25519:
         """
-        Compute the result of repeated squaring of this element.
+        Compute the element that is twice the square of this element.
 
         >>> two = fe25519.one() + fe25519.one()
-        >>> two.sq2() == two + two + two + two
+        >>> two.sq2() == two.sq() + two.sq()
         True
         """
         mask = 2251799813685247
@@ -467,7 +467,7 @@ class fe25519:
         Exponentiation is a synonym for squaring and inversion.
 
         >>> two = fe25519.one() + fe25519.one()
-        >>> two.sq() == two * two
+        >>> two**2 == two * two == two.sq()
         True
         >>> ~fe25519.one() == fe25519.one() ** (-1)
         True
@@ -643,7 +643,7 @@ class fe25519:
         bs.extend(t1.to_bytes(8, 'little'))
         bs.extend(t2.to_bytes(8, 'little'))
         bs.extend(t3.to_bytes(8, 'little'))
-        return bs
+        return bytes(bs)
 
     def __str__(self: fe25519) -> str:
         """
