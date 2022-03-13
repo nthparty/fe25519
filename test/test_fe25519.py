@@ -2,32 +2,48 @@
 Test suite containing functional unit tests for the exported primitives and
 classes.
 """
+from unittest import TestCase
 from parts import parts
 from bitlist import bitlist
 from fountains import fountains
-from unittest import TestCase
 
 from fe25519.fe25519 import fe25519
 
 def one_from_bytes(bs: bytes):
+    """
+    Generate one element from a given bit sequence obtained
+    using `fountains`.
+    """
     ps = list(parts(bs, length=8))
     return fe25519([int.from_bytes(p, 'little') for p in ps])
 
 def two_from_bytes(bs: bytes):
+    """
+    Generate two elements from a given bit sequence obtained
+    using `fountains`.
+    """
     ps = list(parts(bs, length=8))
     f1 = fe25519([int.from_bytes(p, 'little') for p in ps[:5]])
     f2 = fe25519([int.from_bytes(p, 'little') for p in ps[5:]])
     return (f1, f2)
 
 def check_or_generate(self, fs, bits):
-    if bits is not None:
-        self.assertTrue(all(fs)) # Check that all tests succeeded.
-    else:
+    """
+    Wrapper that enables switching between performing a test or
+    generating test input bit vectors compatible with `fountains`.
+    """
+    if bits is None:
         return bitlist(list(fs)).hex() # Return target bits for this test.
+    self.assertTrue(all(fs)) # Check that all tests succeeded.
+    return None
 
 def check_or_generate_operation(self, fun, arity, bits):
+    """
+    Wrapper that enables switching between performing a test or
+    generating test input bit vectors compatible with `fountains`.
+    """
     fs = fountains(
-        8*5*arity, 
+        8 * 5 * arity,
         seed=bytes(0), # This is also the default; explicit for clarity.
         limit=256,
         bits=bits,
@@ -36,6 +52,10 @@ def check_or_generate_operation(self, fun, arity, bits):
     return check_or_generate(self, fs, bits)
 
 class Test_fe25519(TestCase):
+    """
+    Tests for all class methods.
+    """
+    # pylint: disable=C0116,R0904
     def test_one(
             self,
             bits='b71ee55494c10540b2d3c4221793de6c6c722100387cab827ae1522affb5fd66'
@@ -104,7 +124,7 @@ class Test_fe25519(TestCase):
         ):
         fun = lambda bs: (one_from_bytes(bs).sq2()).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
-  
+
     def test_pow22523(
             self,
             bits='4601cde640c8e05a4e63df3edc2a9d472851072b6b361eaaebcf781c0a116150'
@@ -148,7 +168,7 @@ class Test_fe25519(TestCase):
         ):
         def fun(bs):
             f0 = one_from_bytes(bs)
-            return bytes([f0 == f0])
+            return bytes([f0 == f0]) # pylint: disable=R0124
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_eq_false(
@@ -196,7 +216,7 @@ class Test_fe25519(TestCase):
         ):
         def fun(bs):
             f = one_from_bytes(bs)
-            return bitlist([0 if eval(str(f)) == f else 255]).to_bytes()
+            return bitlist([0 if eval(str(f)) == f else 255]).to_bytes() # pylint: disable=W0123
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_bytes(

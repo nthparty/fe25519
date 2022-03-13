@@ -63,7 +63,7 @@ Concise unit tests are implemented with the help of `fountains <https://pypi.org
 Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
 
     python -m pip install pylint
-    python -m pylint fe25519
+    python -m pylint fe25519 ./test/test_fe25519.py
 
 Contributions
 -------------
