@@ -27,17 +27,18 @@ def two_from_bytes(bs: bytes):
     f2 = fe25519([int.from_bytes(p, 'little') for p in ps[5:]])
     return (f1, f2)
 
-def check_or_generate(self, fs, bits):
+def check_or_generate(testcase, fs, bits):
     """
     Wrapper that enables switching between performing a test or
     generating test input bit vectors compatible with `fountains`.
     """
     if bits is None:
         return bitlist(list(fs)).hex() # Return target bits for this test.
-    self.assertTrue(all(fs)) # Check that all tests succeeded.
-    return None
 
-def check_or_generate_operation(self, fun, arity, bits):
+    testcase.assertTrue(all(fs)) # Check that all tests succeeded.
+    return None # Do not return a test input.
+
+def check_or_generate_operation(testcase, fun, arity, bits):
     """
     Wrapper that enables switching between performing a test or
     generating test input bit vectors compatible with `fountains`.
@@ -49,13 +50,13 @@ def check_or_generate_operation(self, fun, arity, bits):
         bits=bits,
         function=fun
     )
-    return check_or_generate(self, fs, bits)
+    return check_or_generate(testcase, fs, bits)
 
 class Test_fe25519(TestCase):
     """
     Tests for all class methods.
     """
-    # pylint: disable=C0116,R0904
+    # pylint: disable=too-many-public-methods,missing-function-docstring
     def test_one(
             self,
             bits='b71ee55494c10540b2d3c4221793de6c6c722100387cab827ae1522affb5fd66'
@@ -168,7 +169,7 @@ class Test_fe25519(TestCase):
         ):
         def fun(bs):
             f0 = one_from_bytes(bs)
-            return bytes([f0 == f0]) # pylint: disable=R0124
+            return bytes([f0 == f0]) # pylint: disable=comparison-with-itself
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_eq_false(
@@ -216,7 +217,9 @@ class Test_fe25519(TestCase):
         ):
         def fun(bs):
             f = one_from_bytes(bs)
-            return bitlist([0 if eval(str(f)) == f else 255]).to_bytes() # pylint: disable=W0123
+            return bitlist([
+                0 if eval(str(f)) == f else 255 # pylint: disable=eval-used
+            ]).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
 
     def test_bytes(
@@ -237,8 +240,8 @@ class Test_fe25519(TestCase):
             return bitlist([0 if fe25519.from_bytes(bytes(f)) == f else 255]).to_bytes()
         return check_or_generate_operation(self, fun, 1, bits)
 
-if __name__ == "__main__":
-    # Generate reference bit lists for tests.
+if __name__ == '__main__':
+    # Generate reference bit vectors for tests.
     test_fe25519 = Test_fe25519()
     for m in [m for m in dir(test_fe25519) if m.startswith('test_')]:
         print(m + ': ' + getattr(test_fe25519, m)(bits=None))

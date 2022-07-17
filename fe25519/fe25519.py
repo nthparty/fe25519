@@ -1,5 +1,5 @@
 """
-Pure Python data structure for working with Ed25519 (and Ristretto)
+Pure-Python data structure for working with Ed25519 (and Ristretto)
 field elements and operations.
 """
 from __future__ import annotations
@@ -13,7 +13,7 @@ class fe25519:
     """
     Class for creating and operating on field elements. The public
     interface of this class is determined primarily by the needs of
-    the `ge25519 <https://pypi.org/project/ge25519>`_ library.
+    the `ge25519 <https://pypi.org/project/ge25519>`__ library.
     However, use of some built-in Python operators is supported via
     special methods.
     """
@@ -49,7 +49,7 @@ class fe25519:
 
     def __init__(self: fe25519, ns: Sequence[int]):
         """Create field element using a list of five 64-bit integers."""
-        self.ns = ns
+        self.ns = ns # pylint: disable=invalid-name
 
     def copy(self: fe25519) -> fe25519:
         """
@@ -247,7 +247,7 @@ class fe25519:
 
         return fe25519(r0)
 
-    def sq(self: fe25519) -> fe25519:
+    def sq(self: fe25519) -> fe25519: # pylint: disable=invalid-name
         """
         Compute the square of this element.
 
@@ -693,5 +693,5 @@ fe25519.sqrtadm1 = fe25519([
 ])
 fe25519.curve25519_A = fe25519([486662, 0, 0, 0, 0])
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     doctest.testmod() # pragma: no cover
