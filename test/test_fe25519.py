@@ -2,6 +2,8 @@
 Test suite containing functional unit tests for the exported primitives and
 classes.
 """
+from __future__ import annotations
+from typing import Tuple, Union, Optional, Callable, Iterable
 from unittest import TestCase
 from parts import parts
 from bitlist import bitlist
@@ -9,28 +11,32 @@ from fountains import fountains
 
 from fe25519.fe25519 import fe25519
 
-def one_from_bytes(bs: bytes):
+def one_from_bytes(bs: bytes) -> fe25519:
     """
     Generate one element from a given bit sequence obtained
-    using `fountains`.
+    using :obj:`fountains`.
     """
     ps = list(parts(bs, length=8))
     return fe25519([int.from_bytes(p, 'little') for p in ps])
 
-def two_from_bytes(bs: bytes):
+def two_from_bytes(bs: bytes) -> Tuple[fe25519, fe25519]:
     """
     Generate two elements from a given bit sequence obtained
-    using `fountains`.
+    using :obj:`fountains`.
     """
     ps = list(parts(bs, length=8))
     f1 = fe25519([int.from_bytes(p, 'little') for p in ps[:5]])
     f2 = fe25519([int.from_bytes(p, 'little') for p in ps[5:]])
     return (f1, f2)
 
-def check_or_generate(testcase, fs, bits):
+def check_or_generate(
+        testcase: TestCase,
+        fs: Union[Iterable[int], Iterable[bool]],
+        bits: Optional[str]
+    ) -> Optional[str]:
     """
     Wrapper that enables switching between performing a test or
-    generating test input bit vectors compatible with `fountains`.
+    generating specifications compatible with :obj:`fountains`.
     """
     if bits is None:
         return bitlist(list(fs)).hex() # Return target bits for this test.
@@ -38,10 +44,15 @@ def check_or_generate(testcase, fs, bits):
     testcase.assertTrue(all(fs)) # Check that all tests succeeded.
     return None # Do not return a test input.
 
-def check_or_generate_operation(testcase, fun, arity, bits):
+def check_or_generate_operation(
+        testcase: TestCase,
+        fun: Union[Callable[[bytes], bytes], Callable[[bytes], bitlist]],
+        arity: int,
+        bits: Optional[str]
+    ) -> Optional[str]:
     """
     Wrapper that enables switching between performing a test or
-    generating test input bit vectors compatible with `fountains`.
+    generating specifications compatible with :obj:`fountains`.
     """
     fs = fountains(
         8 * 5 * arity,
@@ -241,7 +252,7 @@ class Test_fe25519(TestCase):
         return check_or_generate_operation(self, fun, 1, bits)
 
 if __name__ == '__main__':
-    # Generate reference bit vectors for tests.
+    # Generate specifications for tests.
     test_fe25519 = Test_fe25519()
     for m in [m for m in dir(test_fe25519) if m.startswith('test_')]:
         print(m + ': ' + getattr(test_fe25519, m)(bits=None))
