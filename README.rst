@@ -64,7 +64,7 @@ Concise unit tests are implemented with the help of `fountains <https://pypi.org
 
     python test/test_fe25519.py
 
-Style conventions are enforced using `Pylint <https://pylint.pycqa.org>`__::
+Style conventions are enforced using `Pylint <https://pylint.readthedocs.io>`__::
 
     python -m pip install .[lint]
     python -m pylint src/fe25519 test/test_fe25519.py
