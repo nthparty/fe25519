@@ -1,6 +1,6 @@
 [project]
 name = "fe25519"
-version = "1.4.1"
+version = "1.4.2"
 description = """\
     Pure-Python data structure for working with Ed25519 \
     (and Ristretto) field elements and operations.\
