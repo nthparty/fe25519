@@ -1,6 +1,6 @@
 [project]
 name = "fe25519"
-version = "1.4.2"
+version = "1.5.0"
 description = """\
     Pure-Python data structure for working with Ed25519 \
     (and Ristretto) field elements and operations.\
@@ -26,9 +26,9 @@ docs = [
 test = [
     "pytest~=7.2",
     "pytest-cov~=4.0",
-    "parts~=1.6",
-    "bitlist~=1.1",
-    "fountains~=2.1"
+    "parts~=1.7",
+    "bitlist~=1.2",
+    "fountains~=2.2"
 ]
 lint = [
     "pylint~=2.17.0"
