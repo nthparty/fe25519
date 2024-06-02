@@ -21,11 +21,11 @@ Documentation = "https://fe25519.readthedocs.io"
 docs = [
     "toml~=0.10.2",
     "sphinx~=5.0",
-    "sphinx-rtd-theme~=1.1.0"
+    "sphinx-rtd-theme~=2.0.0"
 ]
 test = [
-    "pytest~=7.4",
-    "pytest-cov~=4.0",
+    "pytest~=8.2",
+    "pytest-cov~=5.0",
     "parts~=1.7",
     "bitlist~=1.2",
     "fountains~=2.2"
@@ -35,7 +35,7 @@ lint = [
     "pylint~=3.2.0; python_version >= '3.12'"
 ]
 coveralls = [
-    "coveralls~=3.3.1"
+    "coveralls~=4.0"
 ]
 publish = [
     "build~=0.10",
