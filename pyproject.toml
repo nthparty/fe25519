@@ -24,10 +24,8 @@ docs = [
     "sphinx-rtd-theme~=3.0"
 ]
 test = [
-    "pytest~=7.4; python_version < '3.12'",
-    "pytest~=8.4; python_version >= '3.12'",
-    "pytest-cov~=4.1; python_version < '3.12'",
-    "pytest-cov~=7.0; python_version >= '3.12'",
+    "pytest~=8.4",
+    "pytest-cov~=7.0",
     "parts~=4.0",
     "bitlist~=2.0",
     "fountains~=3.0"
