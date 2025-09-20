@@ -36,7 +36,7 @@ This library is available as a `package on PyPI <https://pypi.org/project/fe2551
 
     python -m pip install fe25519
 
-The library can be imported in the usual ways:
+The library can be imported in the usual manner:
 
 .. code-block:: python
 
